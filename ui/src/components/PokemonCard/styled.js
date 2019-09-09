@@ -1,9 +1,9 @@
-import React from 'react'
-import styled, { css } from 'styled-components'
+import React from "react";
+import styled, { css } from "styled-components";
 import {
   Card as MuiCard,
-  CardContent as MuiCardContent,
-} from '@material-ui/core'
+  CardContent as MuiCardContent
+} from "@material-ui/core";
 
 export const Card = styled(({ isSmall, animateHovering, ...props }) => (
   <MuiCard {...props} />
@@ -38,7 +38,7 @@ export const Card = styled(({ isSmall, animateHovering, ...props }) => (
         height: 220px;
       `};
   }
-`
+`;
 
 export const Img = styled.img`
   width: 150px;
@@ -50,12 +50,12 @@ export const Img = styled.img`
       width: 75px;
       height: 75px;
     `};
-`
+`;
 
 export const CardContent = styled(({ isSmall, ...props }) => (
   <MuiCardContent {...props} />
 ))`
-  &&& {
+  && {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -70,7 +70,7 @@ export const CardContent = styled(({ isSmall, ...props }) => (
         padding: 0.5rem 0.5rem 0.66rem 0.5rem;
       `}
   }
-`
+`;
 
 export const Text = styled.p`
   margin-top: 0;
@@ -81,4 +81,4 @@ export const Text = styled.p`
     css`
       font-size: 0.66rem;
     `}
-`
+`;
