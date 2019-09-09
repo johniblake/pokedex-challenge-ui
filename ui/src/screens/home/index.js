@@ -8,16 +8,19 @@ import TypePicker from "../../components/TypePicker";
 import PokemonCard from "../../components/PokemonCard";
 import * as S from "./styled";
 
-function isResult(pokemon, searchValue, selectedTypes, selectedWeaknesses) {
-  let matchesSearch = true;
+// this function can be used as a callback to the Array.prototype.filter method to produce a subset of pokemon
+// whose types and weaknesses are a superset of the seleectedTypes and selectedWeaknesses
+
+// returns true  --> if the pokemon's type array contains all of the types in selecetedTypes,
+//               --> AND if the pokemon's weakness array contains all of the weaknesses is selectedWeaknesses
+//               --> OR if the selectedTypes and selectedWeaknesses arrays are empty
+//
+// returns false --> if the pokemon's type array doesn't contain all of the types in selecetedTypes,
+//               --> OR if the pokemon's weakness array doesn't contain all of the weaknesses is selectedWeaknesses
+
+function matchesFilter(pokemon, selectedTypes, selectedWeaknesses) {
   let matchesTypes = true;
   let matchesWeaknesses = true;
-
-  if (searchValue) {
-    matchesSearch = _.deburr(pokemon.name.toLowerCase()).includes(
-      _.deburr(searchValue.toLowerCase())
-    );
-  }
 
   if (selectedTypes.length > 0) {
     selectedTypes.forEach(type => {
@@ -32,7 +35,24 @@ function isResult(pokemon, searchValue, selectedTypes, selectedWeaknesses) {
     });
   }
 
-  return matchesTypes && matchesSearch && matchesWeaknesses;
+  return matchesTypes && matchesWeaknesses;
+}
+
+// this function can be used as a callback to the Array.prototype.filter method to produce a subset of pokemon
+// whose names contain the search term
+
+// returns true  --> if the search term is a substring of the pokemon's lowercase name'
+//               --> OR if the search term does not exist
+//
+// returns false --> if the pokemon's lowercase name does not contain the search term
+function containsSearchTerm(pokemon, searchTerm) {
+  let matchesSearch = true;
+  if (searchTerm) {
+    matchesSearch = _.deburr(pokemon.name.toLowerCase()).includes(
+      _.deburr(searchTerm.toLowerCase())
+    );
+  }
+  return matchesSearch;
 }
 
 export default function HomeScreen() {
@@ -68,20 +88,24 @@ export default function HomeScreen() {
           value: pokemon.num
         }))}
       >
-        {searchValue => (
+        {searchTerm => (
           <TypePicker title="Type">
             {selectedTypes => (
               <TypePicker title="Weaknesses">
                 {selectedWeaknesses => (
                   <S.Grid>
                     {data.pokemonMany
+                      //filter pokemon by selected type and weakness
                       .filter(pokemon =>
-                        isResult(
+                        matchesFilter(
                           pokemon,
-                          searchValue,
                           selectedTypes,
                           selectedWeaknesses
                         )
+                      )
+                      //apply search to filtered results
+                      .filter(filteredPokemon =>
+                        containsSearchTerm(filteredPokemon, searchTerm)
                       )
                       .map(pokemon => (
                         <S.CardContainer key={pokemon.num}>
